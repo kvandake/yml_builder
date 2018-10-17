@@ -33,7 +33,7 @@ module YmlBuilder
       @picture << url
       @picture.uniq!
       warn "Предупреждение: число картинок превышает 10 (offer_id=#{@id}). Сокращаем до 10" if @picture.count > 10
-      @picture = @picture[0,9]
+      @picture = @picture[0, 9]
     end
 
     # Метод добавляет ссылку на фотографию товара в начало списка, и ограничивает список 10-ю фотографиями
@@ -45,7 +45,7 @@ module YmlBuilder
       @picture.unshift(url)
       @picture.uniq!
       warn "Предупреждение: число картинок превышает 10 (offer_id=#{@id}). Сокращаем до 10" if @picture.count > 10
-      @picture = @picture[0,9]
+      @picture = @picture[0, 9]
     end
 
     # Метод добавляет характеристики товара (для секции 'param')
@@ -58,7 +58,7 @@ module YmlBuilder
     #   offer.add_param(name: "Количество", unit: "шт.", value: 100)
     #   offer.add_param(name: "Обложка", value: "мягкая")
     def add_param(name:, unit: nil, value:)
-      @meta[name] = { unit: unit, value: value}
+      @meta[name] = {unit: unit, value: value}
     end
 
     # Метод формирует фрагмент YML файла каталога Яндекс.Маркет для одного товара
@@ -81,7 +81,7 @@ module YmlBuilder
       out.compact!
 
       out << footer_line
-      out.map! { |line| ' '.rjust(ident, ' ') + line }
+      out.map! {|line| ' '.rjust(ident, ' ') + line}
       out.join("\n")
     end
 
@@ -153,7 +153,12 @@ module YmlBuilder
     def to_yml_optional(key, value)
       return nil if value.nil?
       key_xml = ::YmlBuilder::Common.convert_key(key)
-      "  <#{key_xml}>#{::YmlBuilder::Common.encode_special_chars(value)}</#{key_xml}>"
+      if key_xml.include?("_html")
+        key_xml = key_xml.sub("_html", "")
+        "  <#{key_xml}><![CDATA[\n#{value}\n]]></#{key_xml}>"
+      else
+        "  <#{key_xml}>#{::YmlBuilder::Common.encode_special_chars(value)}</#{key_xml}>"
+      end
     end
 
     def init_class

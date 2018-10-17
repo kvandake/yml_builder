@@ -21,6 +21,7 @@ module YmlBuilder # :nodoc:
       @params[:vendor] = nil
       @params[:vendor_code] = nil
       @params[:description] = nil
+      @params[:description_html] = nil
       @params[:country_of_origin] = nil
       @params[:adult] = nil
       @params[:param] = nil
